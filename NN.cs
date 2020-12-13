@@ -17,8 +17,6 @@ namespace RecursiveNetwork
         private Matrix<double> Matrix { get; set; }
         private Matrix<double> W { get; set; }
         private Matrix<double> V { get; set; }
-        private Matrix<double> B1 { get; set; }
-        private Matrix<double> B2 { get; set; }
         private Matrix<double> JordanCtx { get; set; }
         private Matrix<double> ElmanCtx { get; set; }
         public NN(Matrix<double> matrix)
@@ -32,8 +30,8 @@ namespace RecursiveNetwork
             Z = jsonObj["z"];
 
             Matrix = matrix;
-            W = Matrix<double>.Build.Random(Matrix.ColumnCount + Matrix.RowCount, Matrix.RowCount, new ContinuousUniform(-0.1, 0.1));
-            V = Matrix<double>.Build.Random(Matrix.RowCount, 1, new ContinuousUniform(-0.1, 0.1));
+            W = Matrix<double>.Build.Random(Matrix.ColumnCount + Matrix.RowCount, Matrix.RowCount, new ContinuousUniform(-1, 1));
+            V = Matrix<double>.Build.Random(Matrix.RowCount, 1, new ContinuousUniform(-1, 1));
 
             JordanCtx = Matrix<double>.Build.Dense(1, 1);
             ElmanCtx = Matrix<double>.Build.Dense(1, Matrix.RowCount);
@@ -72,7 +70,6 @@ namespace RecursiveNetwork
             Array.Copy(lastVec, 1, lastVec, 0, lastVec.Length - 1);
             for (int i = 0; i < Z; i++)
             {
-                Console.WriteLine($"input: {string.Join(",", lastVec.Take(lastVec.Length - 1))}");
                 ProcessVector(lastVec, out double outVal);
                 outVal = Math.Round(outVal);
                 Console.WriteLine($"Next num is: {outVal}");
@@ -118,7 +115,7 @@ namespace RecursiveNetwork
             var outVal = netVal.Activate();
             JordanCtx = outVal;
 
-            var dW = GetDW(target, outVal[0, 0], netVal[0, 0], hiddenOut, inputs);
+            var dW = GetDW(target, outVal[0, 0], netVal[0, 0], hiddenNet, inputs);
             W -= Rate * dW;
 
             var dV = GetDV(target, outVal[0, 0], netVal[0, 0], hiddenOut);

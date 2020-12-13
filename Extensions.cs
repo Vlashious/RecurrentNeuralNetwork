@@ -31,5 +31,11 @@ namespace RecursiveNetwork
 
         public static double Function(double x) => Math.Log(x + Math.Sqrt(x * x + 1));
         public static double FunctionDer(double x) => 1f / (Math.Sqrt(x * x + 1));
+
+        // public static double Function(double x) => 1f / (1 + Math.Exp(-x));
+        // public static double FunctionDer(double x) => Function(x) * (1 - Function(x));
+
+        // public static double Function(double x) => x;
+        // public static double FunctionDer(double x) => 1;
     }
 }
